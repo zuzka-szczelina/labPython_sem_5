@@ -10,6 +10,14 @@ max_til_or_ch = 10 #max_tlt_induced_orientation_change   [deg]
 max_tur_til = 3 #max_turbulence_tilt[deg]
 max_or_cor = 10 #max_orintation_correction
 
+#tilt [deg] to orientation change [deg] function
+def tilt_To_OrCh(tilt):
+    or_ch = np.rad2deg( max_til_or_ch/(np.pi/2) * np.arcsin(cur_til / max_til) )
+    return or_ch
+#orientation correction [deg] to tilt after correction [deg] function
+def orCor_To_Tilt(or_cor):
+    tilt = 0.1*or_cor
+    return tilt
 
 while True:
     #to pewnie się da jakoś krócej napisać
@@ -19,15 +27,16 @@ while True:
 
     cur_til = (cur_til + tur_til if abs(cur_til + tur_til)<max_til else max_til*np.sign(cur_til + tur_til) )
     #orientation_change:
-    or_ch = (max_til_or_ch/(max_til**2))*(cur_til**2)*np.sign(cur_til)
+    or_ch = tilt_To_OrCh(cur_til)
     #orientation_before_correction:
     or_bef_cor = cur_or + or_ch
     #orientation_error
     or_err = or_bef_cor - pr_or
     #orientation_correction:
-    or_cor = (-max_or_cor*np.sin(np.pi/4*or_err/max_or_cor*1.1) if abs(or_err)<max_or_cor*1.1 else max_or_cor*(-np.sign(or_err)) )
+    or_cor = (-max_or_cor*np.sin(np.pi/2*or_err/max_or_cor*1.1) if abs(or_err)<max_or_cor*1.1 else max_or_cor*(-np.sign(or_err)) )
     cur_or = or_bef_cor + or_cor
-
+    #tilt after correction
+    cur_til = orCor_To_Tilt(or_cor)
     print(
           f"tur_til = {tur_til}\n"
           f"cur_til = {cur_til}\n"
@@ -36,5 +45,6 @@ while True:
           f"or_err = {or_err}\n"
           f"or_cor ={or_cor}\n"
           f"current orientation = {cur_or}\n"
+          f"cur_til  {cur_til}\n"
          )
     sleep(20)
