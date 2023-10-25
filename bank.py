@@ -25,9 +25,10 @@
 #Delete these comments before commit!
 #Good luck.
 
-#wpłacanie i wypłacanie pieniędzy
-#pieniądze "u osoby" i w poszczególnych bankach - zeby częśc zostawała jako dostępne a częśc szłą do banku
+#wypłacanie pieniędzy
 #info że imię/nazwa baku się powtórzyła
+#przelewy
+#wyświetlanie
 
 class Bank:
   def __init__(self, name, person_list ):
@@ -87,7 +88,7 @@ if __name__ == "__main__":
       print(f"amount of money?")
       #dodać mechanizm żeby był błąd jeśli input nie liczba int
       money = int(input())
-      person_name = Person(person_name, money, 0)
+      person_name = Person(person_name, money, [])
       person_list.append(person_name)
       print("do you want to create another one? type: yes or no")
       answer = input()
@@ -122,10 +123,11 @@ if __name__ == "__main__":
       money_to_deposit = int(input())
       if money_to_deposit <= person_to_add.money_at_hand :
         person_to_add.money_at_hand -= money_to_deposit
-        person_to_add.money_in_banks += money_to_deposit
+        # też chyba jakiś słownik nwm
+        person_to_add.money_in_banks.append([bank_chosen.name, money_to_deposit])
         #trzeba słownikiem nie listą żeby się dało znaleźć łatwiej info o osobie po imieniu (chyba)
         bank_chosen.person_list.append([person_to_add.name, money_to_deposit])
-        print("success! {}'s {} account: {} money".format(person_to_add.name, bank_chosen.name, money_to_deposit))
+        print("success! {}'s {} account: {} money\n {} money left".format(person_to_add.name, bank_chosen.name, money_to_deposit, person_to_add.money_at_hand))
       else:
         print("This person doesn't have that much to deposit. Try one more time.")
         continue
