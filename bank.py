@@ -25,6 +25,9 @@
 #Delete these comments before commit!
 #Good luck.
 
+#wpłacanie i wypłacanie pieniędzy
+#pieniądze "u osoby" i w poszczególnych bankach - zeby częśc zostawała jako dostępne a częśc szłą do banku
+#info że imię/nazwa baku się powtórzyła
 
 class Bank:
   def __init__(self, name, person_list ):
@@ -32,13 +35,17 @@ class Bank:
     self.person_list = person_list
 
 class Person:
-  def __init__(self, name, money ):
+  def __init__(self, name, money_at_hand, money_in_banks ):
     self.name = name
-    self.money = money
+    self.money_at_hand = money_at_hand
+    self.money_in_banks = money_in_banks
+
+  def money_deposition(self, money):
+    pass
+  def money_deposition(self, money):
+    pass
 
 if __name__ == "__main__":
-  p1 = Person("john", 34)
-  print(type(p1))
 
   print("do you want to create a bank? type: yes or no")
   answer = input()
@@ -78,8 +85,9 @@ if __name__ == "__main__":
       print(f"chose the name of a person")
       person_name = input()
       print(f"amount of money?")
-      money = input()
-      person_name = Person(person_name, money)
+      #dodać mechanizm żeby był błąd jeśli input nie liczba int
+      money = int(input())
+      person_name = Person(person_name, money, 0)
       person_list.append(person_name)
       print("do you want to create another one? type: yes or no")
       answer = input()
@@ -91,17 +99,43 @@ if __name__ == "__main__":
 
   print("do you want add any person to a bank? type: yes or no")
   answer = input()
-  while answer == "yes":
-    print("type person's name, you can choose from: {}".format(list(i.name for i in person_list)))
-    person_input = input()
-    person_to_add = [obj if obj.name == person_input else print("there's no such person") for obj in person_list][0]
-    print("now choose the bank, you can choose from: {}".format(list(i.name for i in bank_list)))
-    bank_input = input()
-    bank_chosen = [obj if obj.name == bank_input else print("there's no such bank") for obj in bank_list][0]
-    bank_chosen.person_list.append(person_to_add)
-    print("do you want to add another one? type: yes or no")
-    answer = input()
+  while answer != "no":
+    if answer == "yes":
+      print("type person's name, you can choose from: {}".format(list(i.name for i in person_list)))
+      person_input = input()
+      person_to_add = [obj for obj in person_list if obj.name == person_input]
+      if person_to_add == []:
+        print("there's no such person, try one more time")
+        continue
+      else:
+        person_to_add = person_to_add[0]
+      print("now choose the bank, you can choose from: {}".format(list(i.name for i in bank_list)))
+      bank_input = input()
+      bank_chosen = [obj for obj in bank_list if obj.name == bank_input ]
+      if bank_chosen == []:
+        print("there's no such bank, try one more time")
+        continue
+      else:
+        bank_chosen = bank_chosen[0]
 
+      print("how much money you want to deposit? {} sill has {} to deposit.".format(person_to_add.name, person_to_add.money_at_hand))
+      money_to_deposit = int(input())
+      if money_to_deposit <= person_to_add.money_at_hand :
+        person_to_add.money_at_hand -= money_to_deposit
+        person_to_add.money_in_banks += money_to_deposit
+        #trzeba słownikiem nie listą żeby się dało znaleźć łatwiej info o osobie po imieniu (chyba)
+        bank_chosen.person_list.append([person_to_add.name, money_to_deposit])
+        print("success! {}'s {} account: {} money".format(person_to_add.name, bank_chosen.name, money_to_deposit))
+      else:
+        print("This person doesn't have that much to deposit. Try one more time.")
+        continue
+      print("do you want to add another person to a bank? type: yes or no")
+      answer = input()
+      continue
+    elif any(answer != i for i in ["yes", "no"]):
+      print("Your answer is neither \"yes\" nor \"no\". Please type it one more time.")
+      answer = input()
+      continue
 
 
 """
