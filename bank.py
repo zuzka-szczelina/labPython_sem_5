@@ -27,8 +27,11 @@
 
 #wypłacanie pieniędzy
 #info że imię/nazwa baku się powtórzyła
+#że już ma konto w danym banku czy dodać chajs i ile?
 #przelewy
-#wyświetlanie
+#na koścu czu chcesz od początku (dodać jeszcze osobę bank itd: ...
+# można zrobić kilka róznych odpowiedzi na przenoszenie do różnych części) ...
+# to się pewnie robi jakoś inaczej - zapytać
 
 class Bank:
   def __init__(self, name, person_list ):
