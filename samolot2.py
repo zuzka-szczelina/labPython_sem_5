@@ -1,6 +1,16 @@
 from time import sleep
 import random
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter("time: %(asctime)s\n %(message)s")
+file_handler = logging.FileHandler("orientation_info.log")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+
 
 class Plane:
 
@@ -52,6 +62,7 @@ class Environment:
 
 
 if __name__ == "__main__":
+    print("plane simulator was activated\norientation info is stored in orientation_info.log")
     P = Plane('Plane1', 0, 0, 0)
     E = Environment(3)
 
@@ -63,5 +74,5 @@ if __name__ == "__main__":
         orientation_error = P.cur_or - P.pr_or
         orientation_correction = P.calculate_orientation_correction(orientation_error)
         P.cur_til = P.or_correction_to_tilt(orientation_correction)
-        print(P,"\n")
+        logger.info("{}\n".format(P))
         sleep(4)
