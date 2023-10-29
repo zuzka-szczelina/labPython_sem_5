@@ -11,7 +11,6 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-
 class Plane:
 
     max_til = 30  # max possible tilt [deg]
