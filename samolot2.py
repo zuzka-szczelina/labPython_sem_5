@@ -59,6 +59,17 @@ class Environment:
             turbulence_tilt = (random.gauss(0, 1 / 3 * self.max_tur_til))
         return turbulence_tilt
 
+def simulation_step_generator(E, P):
+    turbulence_tilt = E.calculate_turbulence_tilt()
+    P.include_turbulence_tilt(turbulence_tilt)
+    orientation_change = P.tilt_to_or_change(P.cur_til)
+    P.change_orientation(orientation_change)
+    orientation_error = P.cur_or - P.pr_or
+    orientation_correction = P.calculate_orientation_correction(orientation_error)
+    P.cur_til = P.or_correction_to_tilt(orientation_correction)
+    sleep(4)
+    yield logger.info("{}\n".format(P))
+
 
 if __name__ == "__main__":
     print("plane simulator was activated\norientation info is stored in orientation_info.log")
@@ -66,12 +77,4 @@ if __name__ == "__main__":
     E = Environment(3)
 
     while True:
-        turbulence_tilt = E.calculate_turbulence_tilt()
-        P.include_turbulence_tilt(turbulence_tilt)
-        orientation_change = P.tilt_to_or_change(P.cur_til)
-        P.change_orientation(orientation_change)
-        orientation_error = P.cur_or - P.pr_or
-        orientation_correction = P.calculate_orientation_correction(orientation_error)
-        P.cur_til = P.or_correction_to_tilt(orientation_correction)
-        logger.info("{}\n".format(P))
-        sleep(4)
+        next(simulation_step_generator(E, P))
