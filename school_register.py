@@ -50,18 +50,23 @@ class SchoolClass:
         self.attendance = attendance
         self.scores = scores
 
+    def __repr__(self):
+        return "{}\nnumber of students: {}\n lessons taken {}".format(self.name, len(self.students), len(self.attendance))
+
     def average_score(self, student):
         student_index = self.students.index(student)
-        average = (sum(self.scores[student_index])/len(self.scores[student_index]) for s in self.students if s == self.student)
+        student_score = self.scores[student_index]
+        average = sum(student_score)/len(student_score)
         return average
 
 
 
-
+#mogę dodać info o charakterystykach: ile już było zajęć ile jeszcze ile wgl ma być
 class GradeBook:
     def __init__(self, students, classes):
         self.students = students
         self.classes = classes
+
 
     def average_score(self, student):
         pass
@@ -75,23 +80,13 @@ def student_generator(number_of_students):
         student_list.append(random.choice(names) + " " + random.choice(surnames))
     return student_list
 
-def score_generator(number_of_grades):
+def score_generator(number_of_grades, number_of_students):
     grades = [2,3,4,5]
     score_list = []
-    for i in range(number_of_grades):
-        score_list.append(random.choice(grades))
+    for i in range(number_of_students):
+        one_student_score = random.choices(grades, k=number_of_grades)
+        score_list.append(one_student_score)
     return score_list
-
-def attendance_generator(date_list, number_of_students):
-    present_absent = [1,0]
-    present_possibility = 0.7
-    weights = [present_possibility, 1-present_possibility]
-    attendance = []
-    for date in date_list:
-        students_presence = random.choices(present_absent, weights=weights, k=number_of_students)
-        date_attendance = {"{}".format(date): students_presence}
-        attendance.append(date_attendance)
-    return attendance
 
 def class_date_generator( start_year, start_month,start_day , step, number_of_lessons):
     step = datetime.timedelta(days=step)
@@ -104,14 +99,26 @@ def class_date_generator( start_year, start_month,start_day , step, number_of_le
         date += step
         i += 1
     return date_list
+def attendance_generator(date_list, number_of_students):
+    present_absent = [1,0]
+    present_possibility = 0.7
+    weights = [present_possibility, 1-present_possibility]
+    attendance = []
+    for date in date_list:
+        students_presence = random.choices(present_absent, weights=weights, k=number_of_students)
+        date_attendance = {"{}".format(date): students_presence}
+        attendance.append(date_attendance)
+    return attendance
+
 
 if __name__ == "__main__":
+#dodać żeby się dało dopisywać studentów, attendance każdego po kolei (pod konkretną datą), score
+#test class:
 
-    student_list = student_generator(10)
-    print(student_list)
-
-    math = SchoolClass("math",random.sample(student_list, 5),[],[] )
-
+    #generating some random school class data
+    student_list = student_generator(4)
+    math = SchoolClass("math",random.sample(student_list, 3),[],[] )
     dates = class_date_generator(2023,2,13,7,5)
-    at = attendance_generator(dates, 10)
-    print(at)
+    at = attendance_generator(dates, len(math.students))
+    score = score_generator(3,len(math.students))
+    print(math)
