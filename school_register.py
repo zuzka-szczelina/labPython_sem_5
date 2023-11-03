@@ -51,7 +51,7 @@ class SchoolClass:
         self.scores = scores
 
     def __repr__(self):
-        return "{}\nnumber of students: {}\n lessons taken {}".format(self.name, len(self.students), len(self.attendance))
+        return "{}\nnumber of students: {}\nlessons held: {}\n".format(self.name, len(self.students), len(self.attendance))
 
     def average_score(self, student):
         student_index = self.students.index(student)
@@ -61,23 +61,31 @@ class SchoolClass:
 
 
 
+
 #mogę dodać info o charakterystykach: ile już było zajęć ile jeszcze ile wgl ma być
-class GradeBook:
+class Register:
     def __init__(self, students, classes):
         self.students = students
         self.classes = classes
 
-
     def average_score(self, student):
-        pass
-
+        student_classes = [cl for cl in self.classes if cl.students.count(student) == 1]
+        print([cl.name for cl in student_classes])
 
 def student_generator(number_of_students):
-    names = ['Ann', 'Mark', 'Tom', 'Jane', 'Tina']
-    surnames = ['Smith', 'Brown', 'Johnson', 'Walker', 'Gray']
+    names = ['Ann', 'Mark', 'Tom', 'Jane', 'Tina', 'Julia', 'Victoria']
+    surnames = ['Smith', 'Brown', 'Johnson', 'Walker', 'Gray', 'Turner']
     student_list = []
-    for i in range(number_of_students):
-        student_list.append(random.choice(names) + " " + random.choice(surnames))
+    i=1
+    while i <= number_of_students:
+        next_student = random.choice(names) + " " + random.choice(surnames)
+        if all(next_student != s for s in student_list):
+            print('{} - no rep'.format(next_student))
+            student_list.append(next_student)
+            i += 1
+        else:
+            print('{} - rep'.format(next_student))
+            continue
     return student_list
 
 def score_generator(number_of_grades, number_of_students):
@@ -112,13 +120,33 @@ def attendance_generator(date_list, number_of_students):
 
 
 if __name__ == "__main__":
-#dodać żeby się dało dopisywać studentów, attendance każdego po kolei (pod konkretną datą), score
-#test class:
+    #dodać żeby się dało dopisywać studentów, attendance każdego po kolei (pod konkretną datą), score
+    #test class:
 
-    #generating some random school class data
-    student_list = student_generator(4)
+    #generating some random school class data for presentation purpose
+    student_list = student_generator(5)
+
     math = SchoolClass("math",random.sample(student_list, 3),[],[] )
-    dates = class_date_generator(2023,2,13,7,5)
-    at = attendance_generator(dates, len(math.students))
-    score = score_generator(3,len(math.students))
-    print(math)
+    physics = SchoolClass("physics",random.sample(student_list, 5),[],[] )
+    programming = SchoolClass("programming",random.sample(student_list, 4),[],[] )
+
+    math_dates = class_date_generator(2023,2,13,7,5)
+    physics_dates = class_date_generator(2023,2,14,7,6)
+    programming_dates = class_date_generator(2023,2,16,7,7)
+
+
+    math.attendance = attendance_generator(math_dates, len(math.students))
+    physics.attendance = attendance_generator(physics_dates, len(physics.students))
+    programming.attendance = attendance_generator(programming_dates, len(programming.students))
+
+
+    math.scores = score_generator(3,len(math.students))
+    physics.scores = score_generator(3, len(physics.students))
+    programming.scores = score_generator(3, len(programming.students))
+
+    #print("{}\n{}\n{}\n{}".format(student_list, math.students, physics.students, programming.students))
+
+    register = Register(student_list,[math, physics, programming])
+    x = register.average_score(register.students[0])
+    #print(x)
+    print(student_list)
