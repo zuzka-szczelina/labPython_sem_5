@@ -38,7 +38,7 @@ class Person:
         self.money_at_hand = money_at_hand
         logger1.debug('person created: [{}]'.format(self))
     def __repr__(self):
-        return 'name:{}\nmoney at hand:{}\naccounts:\n{}'.format(self.name,self.money_at_hand, self.accounts)
+        return 'name:{}, money at hand:{}\naccounts:\n{}'.format(self.name,self.money_at_hand, self.accounts)
 
     def withdraw(self, money, account_number):
         if any(account_number == ac.number for ac in self.accounts):
@@ -65,7 +65,9 @@ class Person:
         else:
             logger1.error('{} money depositoin: wrong account number'.format(self.name))
 
-
+    def save_to_file(self):
+        with open('clients.txt', 'a') as file:
+            file.write('\n{} {}'.format(self.name, self.money_at_hand))
 
 class Bank:
     def __init__(self, name, accounts):
@@ -86,44 +88,88 @@ class Bank:
            logger1.error('{} account creation: to much money selected:{}. {} only has {} at hand'
                          .format(self.name, money, owner.name, owner.money_at_hand))
 
-    def money_transfer(self,principal_ac_number, recipient_ac_number, money):
+    def money_transfer(self, principal_ac_number, recipient_ac_number, money):
+        recipient_account = []
         if any(principal_ac_number == ac.number for ac in self.accounts):
             principal_account = [ac for ac in self.accounts if ac.number == principal_ac_number][0]
             for account in gc.get_objects():
                 if isinstance(account, Account):
                     if recipient_ac_number == account.number:
                         recipient_account = account
-                        if money <= principal_account.money:
-                            principal_account.money -= money
-                            recipient_account.money += money
-                            logger1.info('money transfer successful\n transferred:{}\n principal:{}{}->recipient:{}{}'
-                                         .format(money, principal_account.bank, principal_account.owner,
-                                                 recipient_account.bank, recipient_account.owner))
-                        else:
-                            logger1.error('{} money transfer: to much money selected'.format(self.name,))
-
-
-                    else:
-                        logger1.error('{} money transfer: wrong recipient account number'.format(self.name,))
+            if recipient_account != []:
+                if money <= principal_account.money:
+                    principal_account.money -= money
+                    recipient_account.money += money
+                    logger1.info('{} money transfer successful\n transferred:{}\n principal:[{}, {}] -> recipient:[{}, {}]'
+                                .format(self.name, money, principal_account.bank, principal_account.owner,
+                                         recipient_account.bank, recipient_account.owner))
+                else:
+                    logger1.error('{} money transfer: to much money selected'.format(self.name,))
+            else:
+                logger1.error('{} money transfer: wrong recipient account number. account not exist'.format(self.name,))
         else:
-            logger1.error('{} money transfer: wrong principal account number'.format(self.name,))
+            logger1.error('{} money transfer: wrong principal account number. no such account in {}'.format(self.name, self.name))
+
+    @staticmethod
+    def advertising_slogan1():
+        return 'give us money, we take care of it'
+
+    @staticmethod
+    def advertising_slogan2():
+        return 'give us money, there\'s no better place'
+
+    @staticmethod
+    def pushy(function):
+        def wrapper():
+            func = function()
+            pushy_text = func.upper()+"!!!"
+            return pushy_text
+        return wrapper
+
 
 
 if __name__ == "__main__":
 
-#trial run:
-  b1 = Bank('b1', [])
-  Mark = Person('Mark', 300, [])
-  Ann = Person('Ann',200, [])
+    #to mogłaby być historia konta albo coś takiego
+    with open('clients.txt', 'r') as file:
+        clients = file.readlines()
+    for client in clients:
+        clients[clients.index(client)] = client.replace('\n','')
+    logger1.debug('{} clients data uploaded'.format(len(clients)))
+    for client in clients:
+        client = client.split()
+        client[0] = Person(client[0], client[1], [])
 
-  b1.create_account(Mark,23)
-  b1.create_account(Ann, 301)
-  b1.create_account(Ann, 12)
+    b1 = Bank('b1', [])
+    b2 = Bank('b2', [])
 
-  Mark.deposit(25,3)
-  Mark.deposit(400, 1)
-  Mark.deposit(25,1)
+    Mark = Person('Mark', 300, [])
+    Ann = Person('Ann',200, [])
+    Tom = Person('Tom', 250, [])
 
-  Ann.withdraw(25,4)
-  Ann.withdraw(300,2)
-  Ann.withdraw(5,2)
+    Ann.save_to_file()
+    Mark.save_to_file()
+    Tom.save_to_file()
+
+    b1.create_account(Mark,23)
+    b1.create_account(Ann, 301)
+    b1.create_account(Ann, 12)
+
+    Mark.deposit(25,3)
+    Mark.deposit(400, 1)
+    Mark.deposit(25,1)
+
+    Ann.withdraw(25,4)
+    Ann.withdraw(300,2)
+    Ann.withdraw(5,2)
+
+    b2.create_account(Tom,150)
+    b2.money_transfer(15,2,20)
+    b2.money_transfer(3, 20, 20)
+    b2.money_transfer(3, 2, 300)
+    b2.money_transfer(3, 2, 20)
+
+    logger1.info(b2.advertising_slogan1())
+    pushy_ad = b2.pushy(b2.advertising_slogan2)
+    logger1.info(pushy_ad())
+
