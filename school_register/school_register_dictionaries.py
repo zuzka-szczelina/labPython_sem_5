@@ -1,5 +1,6 @@
 import random
 import datetime
+import autopep8
 
 
 #info dla ziomka z labów:
@@ -84,11 +85,9 @@ def total_average(student_name, student_surname):
                 class_averages.append(sum(student['score'])/len(student['score']))
     average = sum(class_averages)/len(class_averages)
 
-
-school_register = [ ]
-
+#school_register = [ ]
 #math = {'dates': [], 'students': []}
-student = {'name': '', 'surname': '', 'attendance': [], 'scores': []}
+#student = {'name': '', 'surname': '', 'attendance': [], 'scores': []}
 
 
 if __name__ == "__main__":
