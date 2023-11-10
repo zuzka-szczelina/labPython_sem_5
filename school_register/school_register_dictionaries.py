@@ -120,9 +120,9 @@ if __name__ == "__main__":
 
     student1 = '{} {}'.format(physics['students'][0]['name'], physics['students'][0]['surname'])
     class_average1 = class_average(physics['students'][0]['name'], physics['students'][0]['surname'], physics)
-    total_average1 = total_average(physics['students'][0]['name'], physics['students'][0]['surname'])
+    #total_average1 = total_average(physics['students'][0]['name'], physics['students'][0]['surname'])
     print(student1)
     print(class_average1)
     #print(total_average1)
-    print(school_register['classes'])
+    print(type(school_register['classes'][0]))
     print(physics["students"])
