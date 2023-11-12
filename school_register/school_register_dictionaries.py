@@ -25,6 +25,10 @@ def total_average(register_name, student_name, student_surname):
 
 if __name__ == "__main__":
 
+# wiem że mi printuje info z importowanego skryptu example_register_generation.py
+# spejalnie tak zrobiłam, bo ziomek chciał dużo printów :/
+# acz nwm czy to to generowanie danych w osobnym pliku zrobiłam tak jak należy
+
     with open('register.json') as f:
        register = json.load(f)
     print("whole register:\n{}".format(json.dumps(register, indent=2)))
