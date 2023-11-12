@@ -37,10 +37,6 @@ def class_date_generator( start_year, start_month, start_day , step, number_of_l
         i += 1
     return date_list
 
-#tu nie wiem czy potrzebnie robię słownik (dodaję datę do obecności)
-#bo wszystkie daty w które mają być zajęcia są już i tak jako osobna lista
-# ale tak jest chyba czytelniej i widać które zajęcia już były
-# bo nie wszystkie daty mają obecność :/
 def generate_attendance(date_list, student_list):
     present_absent = [1,0]
     present_possibility = 0.7
@@ -51,9 +47,9 @@ def generate_attendance(date_list, student_list):
             student_attendance.update({'{}'.format(date): random.choices(present_absent, weights=weights)[0]})
         student.update({'attendance': student_attendance})
 
-
 #tu poniżej jest funkcja, chciałam zrobić tak żeby tworzyła od razu zmienną o zadanej nazwie
 #czy to się tak robi? (zmienna powstaje ale podkreśla na czerwono z dopiskiem "unresoved reference nazwa_zmiennej")
+#odp: tak to jest git
 def generate_school_class2(name, dates, students):
         globals()[name] = {'name': name, 'dates': dates, 'students': students}
 
@@ -71,7 +67,6 @@ math_dates = class_date_generator(2023, 2, 13, 7, 5)
 physics_dates = class_date_generator(2023, 2, 14, 7, 6)
 programming_dates = class_date_generator(2023, 2, 16, 7, 7)
 
-
 math_students = [copy(s) for s in random.sample(student_list, 5)]
 physics_students = [copy(s) for s in random.sample(student_list, 7)]
 programming_students = [copy(s) for s in student_list]
@@ -86,7 +81,7 @@ generate_score(3, physics_students)
 generate_score(3, programming_students)
 print("attendance and score generated:\n{}".format(json.dumps(math_students, indent=2)))
 
-#generate_school_class('math', math_dates, math_students)
+#generate_school_class2('math', math_dates, math_students)
 math = generate_school_class('math', math_dates, math_students)
 physics = generate_school_class('physics', physics_dates, physics_students)
 programming = generate_school_class('programming', programming_dates, programming_students)
